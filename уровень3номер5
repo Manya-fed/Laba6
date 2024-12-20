@@ -1,0 +1,100 @@
+#5. Обработать результаты первенства по футболу. Результаты каж-
+#дой игры заданы в виде названий команд и счета (количество забитых
+
+#и пропущенных мячей). Сформировать таблицу очков (выигрыш – 3,
+
+#178
+#ничья – 1, проигрыш – 0) и упорядочить результаты в соответствии с
+
+#занятым местом. Если сумма очков у двух команд одинакова, то срав-
+#ниваются разности забитых и пропущенных мячей. Вывести резуль-
+#тирующую таблицу, содержащую место, название команды, количе-
+#ство очков.
+
+
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.points = 0
+        self.goals_for = 0
+        self.goals_against = 0
+
+    def add_result(self, goals_for, goals_against):
+        self.goals_for += goals_for
+        self.goals_against += goals_against
+        if goals_for > goals_against:
+            self.points += 3  
+        elif goals_for == goals_against:
+            self.points += 1  
+
+    def goal_difference(self):
+        return self.goals_for - self.goals_against
+
+    def __repr__(self):
+        return f"{self.name} (Очки: {self.points}, Разница: {self.goal_difference()})"
+
+
+class LeagueTable:
+    def __init__(self):
+        self.teams = {}
+
+    def add_match_result(self, team1_name, team1_goals_for, team1_goals_against, team2_name, team2_goals_for,
+                         team2_goals_against):
+        if team1_name not in self.teams:
+            self.teams[team1_name] = Team(team1_name)
+        if team2_name not in self.teams:
+            self.teams[team2_name] = Team(team2_name)
+
+        self.teams[team1_name].add_result(team1_goals_for, team1_goals_against)
+        self.teams[team2_name].add_result(team2_goals_for, team2_goals_against)
+
+    def get_sorted_table(self):
+        return sorted(self.teams.values(), key=lambda t: (-t.points, -t.goal_difference()))
+
+    def display_table(self):
+        sorted_teams = self.get_sorted_table()
+        print("\nТаблица очков:")
+        print("Место | Команда              | Очки | Разница")
+        print("-" * 40)
+        for index, team in enumerate(sorted_teams, start=1):
+            print(f"{index:<5} | {team.name:<20} | {team.points:<4} | {team.goal_difference()}")
+
+
+def main():
+    league_table = LeagueTable()
+
+    print(
+        "Введите результаты матчей (формат: команда1 забитые_мячи пропущенные_мячи команда2 забитые_мячи пропущенные_мячи).")
+    print("Всего нужно ввести 3 матча. Для завершения введите 'exit'.")
+
+    for _ in range(3):
+        result = input("Введите результат матча: ")
+        if result.lower() == 'exit':
+            break
+
+        parts = result.split()
+        if len(parts) != 6:
+            print(
+                "Ошибка: Ввод должен содержать 6 частей. Пожалуйста, введите в формате: команда1 забитые_мячи пропущенные_мячи команда2 забитые_мячи пропущенные_мячи")
+            continue
+
+        try:
+            team1_name = parts[0]
+            team1_goals_for = int(parts[1])
+            team1_goals_against = int(parts[2])
+            team2_name = parts[3]
+            team2_goals_for = int(parts[4])
+            team2_goals_against = int(parts[5])
+        except (IndexError, ValueError):
+            print("Ошибка: Неверный формат ввода. Убедитесь, что вы вводите данные в правильном формате.")
+            continue
+
+        league_table.add_match_result(team1_name, team1_goals_for, team1_goals_against, team2_name, team2_goals_for,
+                                      team2_goals_against)
+
+    
+    league_table.display_table()
+
+
+if __name__ == "__main__":
+    main()
