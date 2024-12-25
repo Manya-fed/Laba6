@@ -56,7 +56,7 @@ class LeagueTable:
 
     def display_table(self):
         sorted_teams = self.get_sorted_table()
-        print("nТаблица очков:")
+        print("Таблица очков:")
         print("Место | Команда              | Очки | Разница")
         print("-" * 40)
         for index, team in enumerate(sorted_teams, start=1):
