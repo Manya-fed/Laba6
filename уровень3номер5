@@ -23,16 +23,15 @@ class Team:
         self.goals_for += goals_for
         self.goals_against += goals_against
         if goals_for > goals_against:
-            self.points += 3  
+            self.points += 3
         elif goals_for == goals_against:
-            self.points += 1  
+            self.points += 1
 
     def goal_difference(self):
         return self.goals_for - self.goals_against
 
     def __repr__(self):
         return f"{self.name} (Очки: {self.points}, Разница: {self.goal_difference()})"
-
 
 class LeagueTable:
     def __init__(self):
@@ -44,57 +43,40 @@ class LeagueTable:
             self.teams[team1_name] = Team(team1_name)
         if team2_name not in self.teams:
             self.teams[team2_name] = Team(team2_name)
-
         self.teams[team1_name].add_result(team1_goals_for, team1_goals_against)
         self.teams[team2_name].add_result(team2_goals_for, team2_goals_against)
-
     def get_sorted_table(self):
-        return sorted(self.teams.values(), key=lambda t: (-t.points, -t.goal_difference()))
+        teams_list = list(self.teams.values())
+        n = len(teams_list)
+        for i in range(n):
+            for j in range(0, n - i - 1):
+                if teams_list[j].points < teams_list[j + 1].points or (teams_list[j].points == teams_list[j + 1].points and teams_list[j].goal_difference() < teams_list[j + 1].goal_difference()):
+                    teams_list[j], teams_list[j + 1] = teams_list[j + 1], teams_list[j]
+        return teams_list
 
     def display_table(self):
         sorted_teams = self.get_sorted_table()
-        print("\nТаблица очков:")
+        print("nТаблица очков:")
         print("Место | Команда              | Очки | Разница")
         print("-" * 40)
         for index, team in enumerate(sorted_teams, start=1):
             print(f"{index:<5} | {team.name:<20} | {team.points:<4} | {team.goal_difference()}")
 
-
 def main():
     league_table = LeagueTable()
-
-    print(
-        "Введите результаты матчей (формат: команда1 забитые_мячи пропущенные_мячи команда2 забитые_мячи пропущенные_мячи).")
-    print("Всего нужно ввести 3 матча. Для завершения введите 'exit'.")
-
-    for _ in range(3):
-        result = input("Введите результат матча: ")
-        if result.lower() == 'exit':
-            break
-
-        parts = result.split()
-        if len(parts) != 6:
-            print(
-                "Ошибка: Ввод должен содержать 6 частей. Пожалуйста, введите в формате: команда1 забитые_мячи пропущенные_мячи команда2 забитые_мячи пропущенные_мячи")
-            continue
-
-        try:
-            team1_name = parts[0]
-            team1_goals_for = int(parts[1])
-            team1_goals_against = int(parts[2])
-            team2_name = parts[3]
-            team2_goals_for = int(parts[4])
-            team2_goals_against = int(parts[5])
-        except (IndexError, ValueError):
-            print("Ошибка: Неверный формат ввода. Убедитесь, что вы вводите данные в правильном формате.")
-            continue
-
+    match_results = [
+        ("TeamA", 2, 1, "TeamB", 1, 1),
+        ("TeamC", 0, 3, "TeamA", 3, 0),
+        ("TeamB", 2, 2, "TeamC", 2, 1),
+    ]
+    print("Исходные результаты матчей:")
+    for result in match_results:
+        team1_name, team1_goals_for, team1_goals_against, team2_name, team2_goals_for, team2_goals_against = result
+        print(f"{team1_name} {team1_goals_for}:{team1_goals_against} {team2_name} {team2_goals_for}:{team2_goals_against}")
         league_table.add_match_result(team1_name, team1_goals_for, team1_goals_against, team2_name, team2_goals_for,
                                       team2_goals_against)
-
-    
     league_table.display_table()
-
-
 if __name__ == "__main__":
     main()
+
+    
