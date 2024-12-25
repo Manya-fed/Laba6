@@ -4,64 +4,66 @@
 
 #Выполнить задание к лабораторной работе 6 с использованиемклассов, используя наследование по указанию преподавателя.
 
+import random
 
 class Team:
     def __init__(self, name, points):
-        self.name = name  
-        self.points = points  
+        self.name = name
+        self.points = points
 
     def __repr__(self):
         return f"{self.name}: {self.points} баллов"
 
 class Group:
     def __init__(self):
-        self.teams = []  
+        self.teams = []
 
     def add_team(self, name, points):
-        self.teams.append(Team(name, points)) 
+        self.teams.append(Team(name, points))
 
     def get_top_teams(self, limit=6):
-        for i in range(len(self.teams)):
-            for j in range(len(self.teams) - 1):
+        n = len(self.teams)
+        for i in range(n - 1):
+            for j in range(0, n - i - 1):
                 if self.teams[j].points < self.teams[j + 1].points:
                     self.teams[j], self.teams[j + 1] = self.teams[j + 1], self.teams[j]
         return self.teams[:limit]
 
-
 def sort_teams(teams):
-    for i in range(len(teams)):
-        for j in range(len(teams) - 1):
+    n = len(teams)
+    for i in range(n - 1):
+        for j in range(0, n - i - 1):
             if teams[j].points < teams[j + 1].points:
                 teams[j], teams[j + 1] = teams[j + 1], teams[j]
     return teams
-
 
 def main():
     group1 = Group()
     group2 = Group()
 
-   
-    print("Введите баллы для первой группы (12 команд):")
+    print("Исходные данные:")
+
+    print("Группа 1:")
     for i in range(1, 13):
-        points = int(input(f"Введите баллы команды №{i}: "))
+        points = random.randint(0, 100)  
         group1.add_team(f"Команда {i}", points)
+        print(f"Команда {i}: {points} баллов")
 
-    
-    print("Введите баллы для второй группы (12 команд):")
+    print("Группа 2:")
     for i in range(1, 13):
-        points = int(input(f"Введите баллы команды №{i + 12}: "))
+        points = random.randint(0, 100)  
         group2.add_team(f"Команда {i + 12}", points)
+        print(f"Команда {i + 12}: {points} баллов")
 
-    
     all_teams = group1.teams + group2.teams
-    sorted_all_teams = sort_teams(all_teams)  
-    top_overall = sorted_all_teams[:6]  
+    sorted_all_teams = sort_teams(all_teams)
+    top_overall = sorted_all_teams[:6]
 
-    
-    print("\n6 лучших команд в общем соревновании:")
+    print("Результат:")
+    print("6 лучших команд в общем соревновании:")
     for team in top_overall:
         print(team)
 
-
 if __name__ == "__main__":
     main()
+
