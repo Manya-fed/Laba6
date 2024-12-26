@@ -55,15 +55,17 @@ def main():
         group2.add_team(f"Команда {i + 12}", points)
         print(f"Команда {i + 12}: {points} баллов")
 
-    all_teams = group1.teams + group2.teams
-    sorted_all_teams = sort_teams(all_teams)
-    top_overall = sorted_all_teams[:6]
+    top_group1 = group1.get_top_teams()
+    top_group2 = group2.get_top_teams()
 
     print("Результат:")
-    print("6 лучших команд в общем соревновании:")
-    for team in top_overall:
+    print("6 лучших команд в группе 1:")
+    for team in top_group1:
+        print(team)
+
+    print("6 лучших команд в группе 2:")
+    for team in top_group2:
         print(team)
 
 if __name__ == "__main__":
     main()
-
